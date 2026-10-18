@@ -1,4 +1,4 @@
-const API_URL = "https://future-fs-02-f0di.onrender.com//api/leads";
+const API_URL = "https://future-fs-02-f0di.onrender.com/api/leads";
 
 const form = document.getElementById("leadForm");
 const dialog = document.getElementById("leadDialog");
