@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f5f3ff">
+  <meta name="description" content="LeadFlow CRM - Manage client leads, track statuses, and monitor conversion rates.">
+  <title>LeadFlow CRM | Client Lead Management</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <header class="topbar">
+    <h1>LeadFlow CRM</h1>
+    <span>Client Lead Management System</span>
+  </header>
+
+  <main class="container">
+
+    <!-- Welcome section -->
+    <section class="welcome">
+      <div>
+        <h2>Lead Management Dashboard</h2>
+        <p>Manage your clients and grow your business.</p>
+      </div>
+
+      <button type="button" id="addLeadBtn">+ Add New Lead</button>
+    </section>
+
+    <!-- Dashboard statistics -->
+    <section class="stats">
+
+      <article class="stat-card" data-status="All" tabindex="0" role="button"
+        aria-label="Show all leads">
+        <p>Total Leads</p>
+        <h2 id="totalLeads">0</h2>
+        <small>All client leads</small>
+      </article>
+
+      <article class="stat-card" data-status="New" tabindex="0" role="button"
+        aria-label="Show new leads">
+        <p>New Leads</p>
+        <h2 id="newLeads">0</h2>
+        <small>Awaiting contact</small>
+      </article>
+
+      <article class="stat-card" data-status="Contacted" tabindex="0" role="button"
+        aria-label="Show contacted leads">
+        <p>Contacted</p>
+        <h2 id="contactedLeads">0</h2>
+        <small>Leads contacted</small>
+      </article>
+
+      <article class="stat-card" data-status="Converted" tabindex="0" role="button"
+        aria-label="Show converted leads">
+        <p>Converted</p>
+        <h2 id="convertedLeads">0</h2>
+        <small>Successful conversions</small>
+      </article>
+
+      <article class="stat-card conversion-card">
+        <p>Conversion Rate</p>
+        <h2 id="conversionRate">0.0%</h2>
+        <small>Converted leads / total leads</small>
+      </article>
+
+    </section>
+
+    <!-- Leads table -->
+    <section class="panel">
+      <div class="panel-heading">
+        <div>
+          <h2 id="leadsHeading">Client Leads</h2>
+          <p id="filterDescription">View and manage your potential customers.</p>
+        </div>
+
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="Search leads..."
+          aria-label="Search leads"
+        >
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Client</th>
+              <th>Email</th>
+              <th>Source</th>
+              <th>Status</th>
+              <th>Follow-up</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody id="leadsTable"></tbody>
+        </table>
+      </div>
+
+      <p id="emptyMessage" hidden>No matching leads found.</p>
+    </section>
+
+    <!-- Add/Edit lead dialog -->
+    <dialog id="leadDialog">
+      <form id="leadForm">
+        <h2 id="formTitle">Add New Lead</h2>
+
+        <label for="name">Client name</label>
+        <input id="name" name="name" type="text" required>
+
+        <label for="email">Email address</label>
+        <input id="email" name="email" type="email" required>
+
+        <label for="source">Lead source</label>
+        <select id="source" name="source">
+          <option>Website</option>
+          <option>LinkedIn</option>
+          <option>Referral</option>
+          <option>Other</option>
+        </select>
+
+        <label for="status">Status</label>
+        <select id="status" name="status">
+          <option>New</option>
+          <option>Contacted</option>
+          <option>Converted</option>
+        </select>
+
+        <label for="followUp">Follow-up date</label>
+        <input id="followUp" name="followUp" type="date">
+
+        <label for="notes">Notes</label>
+        <textarea
+          id="notes"
+          name="notes"
+          rows="4"
+          placeholder="Enter client notes..."
+        ></textarea>
+
+        <div class="form-actions">
+          <button type="button" id="cancelBtn" class="secondary">
+            Cancel
+          </button>
+
+          <button type="submit">Save Lead</button>
+        </div>
+      </form>
+    </dialog>
+
+  </main>
+
+  <script src="script.js"></script>
+
+  <!-- Dashboard card click handling -->
+  <script>
+    document.querySelectorAll(".stat-card[data-status]").forEach(card => {
+      function selectCard() {
+        const status = card.dataset.status;
+
+        if (typeof window.filterLeads === "function") {
+          window.filterLeads(status);
+        } else {
+          document.dispatchEvent(
+            new CustomEvent("leadflow-filter", {
+              detail: { status }
+            })
+          );
+        }
+      }
+
+      card.addEventListener("click", selectCard);
+
+      card.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          selectCard();
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
